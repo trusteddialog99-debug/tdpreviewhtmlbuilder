@@ -108,10 +108,11 @@ def build_jsonld(images, code, description, start, end):
         if start: offer["availabilityStarts"] = start.isoformat()
         if end: offer["availabilityEnds"] = end.isoformat()
         graph.append(offer)
-    # trustedDialog erwartet ein JSON-LD-Array aus einzelnen Objekten.
-    payload = []
-    for item in graph:
-        payload.append({"@context": "https://schema.org", **item})
+    payload = {"@context": "https://schema.org"}
+    if len(graph) == 1:
+        payload.update(graph[0])
+    else:
+        payload["@graph"] = graph
     return '<script type="application/ld+json">\n' + json.dumps(payload, ensure_ascii=False, indent=2) + '\n</script>'
 
 
